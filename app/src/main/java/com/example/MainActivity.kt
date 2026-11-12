@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.outlined.GraphicEq
+import androidx.compose.material.icons.outlined.Layers
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
@@ -46,6 +48,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.screens.FloatingBubbleScreen
 import com.example.ui.screens.LiveMicScreen
 import com.example.ui.screens.RecordModulateScreen
 import com.example.ui.screens.SavedAudiosScreen
@@ -54,6 +57,7 @@ import com.example.ui.theme.NeonCyan
 import com.example.ui.theme.NeonPink
 import com.example.ui.theme.StudioBorder
 import com.example.ui.theme.StudioCardBg
+import com.example.ui.theme.TelegramBlue
 import com.example.ui.theme.TeleVoiceTheme
 import com.example.ui.theme.TextMuted
 import com.example.ui.theme.TextPrimary
@@ -70,21 +74,28 @@ enum class AppNavTab(
 ) {
     RECORD(
         route = "record",
-        title = "Record & Send",
+        title = "Record",
         hindiTitle = "रिकॉर्ड",
         selectedIcon = Icons.Filled.Mic,
         unselectedIcon = Icons.Outlined.Mic
     ),
+    BUBBLE(
+        route = "bubble",
+        title = "TG Bubble",
+        hindiTitle = "फ्लोटिंग बबल",
+        selectedIcon = Icons.Filled.Layers,
+        unselectedIcon = Icons.Outlined.Layers
+    ),
     LIVE(
         route = "live",
-        title = "Live Modulation",
+        title = "Live Mic",
         hindiTitle = "लाइव मॉड्यूलेशन",
         selectedIcon = Icons.Filled.GraphicEq,
         unselectedIcon = Icons.Outlined.GraphicEq
     ),
     SAVED(
         route = "saved",
-        title = "Saved Audios",
+        title = "Audios",
         hindiTitle = "सेव्ड ऑडियो",
         selectedIcon = Icons.Filled.MusicNote,
         unselectedIcon = Icons.Outlined.MusicNote
@@ -107,7 +118,7 @@ class MainActivity : ComponentActivity() {
                 var currentTab by remember { mutableStateOf(AppNavTab.RECORD) }
                 var showTelegramSettings by remember { mutableStateOf(false) }
 
-                // Listen for Toast/Snackbar feedback messages
+                // Listen for feedback messages
                 LaunchedEffect(Unit) {
                     viewModel.userMessage.collectLatest { msg ->
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -147,24 +158,26 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             imageVector = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
                                             contentDescription = tab.title,
-                                            tint = if (isSelected) NeonPink else TextMuted,
-                                            modifier = Modifier.size(24.dp)
+                                            tint = if (isSelected) {
+                                                if (tab == AppNavTab.BUBBLE) TelegramBlue else NeonPink
+                                            } else TextMuted,
+                                            modifier = Modifier.size(23.dp)
                                         )
                                     },
                                     label = {
                                         Text(
                                             text = tab.title,
-                                            fontSize = 11.sp,
+                                            fontSize = 10.5.sp,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                             color = if (isSelected) TextPrimary else TextMuted
                                         )
                                     },
                                     colors = NavigationBarItemDefaults.colors(
-                                        selectedIconColor = NeonPink,
+                                        selectedIconColor = if (tab == AppNavTab.BUBBLE) TelegramBlue else NeonPink,
                                         selectedTextColor = TextPrimary,
                                         unselectedIconColor = TextMuted,
                                         unselectedTextColor = TextMuted,
-                                        indicatorColor = NeonPink.copy(alpha = 0.15f)
+                                        indicatorColor = (if (tab == AppNavTab.BUBBLE) TelegramBlue else NeonPink).copy(alpha = 0.15f)
                                     ),
                                     modifier = Modifier.testTag("nav_item_${tab.route}")
                                 )
@@ -181,6 +194,9 @@ class MainActivity : ComponentActivity() {
                             AppNavTab.RECORD -> RecordModulateScreen(
                                 viewModel = viewModel,
                                 onOpenTelegramSettings = { showTelegramSettings = true }
+                            )
+                            AppNavTab.BUBBLE -> FloatingBubbleScreen(
+                                viewModel = viewModel
                             )
                             AppNavTab.LIVE -> LiveMicScreen(
                                 viewModel = viewModel
