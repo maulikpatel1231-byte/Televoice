@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TeleVoice</string>
+    <string name="tab_record">Record &amp; Modulate</string>
+    <string name="tab_live">Live Mic</string>
+    <string name="tab_saved">Saved Audios</string>
+    <string name="tab_settings">Telegram Settings</string>
+    <string name="send_to_telegram">Send to Telegram</string>
+    <string name="record_female_voice">Record Female Voice</string>
+    <string name="live_modulation_title">Real-Time Voice Modulation</string>
+    <string name="female_presets">Female Voice Presets</string>
+</resources>

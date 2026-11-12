@@ -1,0 +1,6 @@
+{
+  "name": "TeleVoice",
+  "description": "Real-time female voice modulator and direct voice message sender for Telegram",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
